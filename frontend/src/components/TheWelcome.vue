@@ -11,7 +11,12 @@
 import axios from 'axios';
 
 function hello() {
-  axios.post("http://localhost:3000/api/hello", "Hello from Vue")
+  axios.post("/api/hello", {
+    message: 'Hello from Vue'
+  })
+  .then(function (response) {
+    console.log(response);
+  })
   .catch((error) => {
     window.alert(`The API returned an error: ${error}`);
   })
