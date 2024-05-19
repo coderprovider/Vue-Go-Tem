@@ -1,9 +1,9 @@
-<script setup lang="ts">
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
   <main>
-    <TheWelcome />
+    <MainLayout />
   </main>
 </template>
+
+<script setup lang="ts">
+import MainLayout from './components/MainLayout.vue'
+</script>

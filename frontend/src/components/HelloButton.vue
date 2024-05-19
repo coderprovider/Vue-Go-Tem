@@ -1,10 +1,9 @@
 <template>
-  <div class="welcome">
-    This is a Vue frontend.
+  <div class="wrapper">
+    <button @click="hello" class="hello">
+      Say hello
+    </button>
   </div>
-  <button @click="hello">
-    Say hello
-  </button>
 </template>
 
 <script setup lang="ts">
@@ -24,8 +23,16 @@ function hello() {
 </script>
 
 <style scoped>
-.welcome {
-  font-size: 36;
-  color: aquamarine;
+.wrapper {
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+}
+.hello {
+  background-color: aqua;
+  border-radius: 20px;
+  border: 0px;
+  padding: 10px;
+  height: 3rem;
 }
 </style>
