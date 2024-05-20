@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type vueMessage struct {
@@ -25,13 +28,28 @@ func buttonHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	db, err := sql.Open("sqlite3", "test")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	result, err := db.Exec("insert into test (mytext, myinteger) values ('Success', '42')",
+		"Apple", 72000)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(result.LastInsertId()) // id последнего добавленного объекта
+	fmt.Println(result.RowsAffected()) // количество добавленных строк
+
+	// ================
+
 	http.HandleFunc("/api/hello", buttonHandler)
 
-	// Serve static files from the frontend/dist directory.
 	fs := http.FileServer(http.Dir("./frontend/dist"))
 	http.Handle("/", fs)
 
-	// Start the server.
 	fmt.Println("Server listening on port 3000")
 	log.Panic(
 		http.ListenAndServe(":3000", nil),
