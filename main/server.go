@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -29,6 +30,8 @@ func buttonHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
+	// Read SQL database
+
 	db, err := sql.Open("sqlite3", "test")
 	if err != nil {
 		panic(err)
@@ -40,10 +43,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(result.LastInsertId()) // id последнего добавленного объекта
-	fmt.Println(result.RowsAffected()) // количество добавленных строк
 
-	// ================
+	lastInsertId, _ := result.LastInsertId()
+	rowsAffecred, _ := result.RowsAffected()
+
+	fmt.Println("SQL last insert ID: ", lastInsertId)
+	fmt.Println("SQL rows affected: ", rowsAffecred)
+
+	// Start server
 
 	http.HandleFunc("/api/hello", buttonHandler)
 
@@ -54,4 +61,19 @@ func main() {
 	log.Panic(
 		http.ListenAndServe(":3000", nil),
 	)
+
+	// Post last created ID
+
+	type IdPost struct {
+		id int64
+	}
+
+	marshalled, err := json.Marshal(IdPost{id: lastInsertId})
+
+	resp, err := http.Post("/api/upload", "application/json", bytes.NewReader(marshalled))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("POST response:", resp)
 }
