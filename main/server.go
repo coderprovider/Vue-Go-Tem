@@ -1,18 +1,23 @@
 package main
 
 import (
-	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"runtime"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type vueMessage struct {
 	Message string `json:"message"`
+}
+
+type IdPost struct {
+	Id int64 `json:"id"`
 }
 
 func buttonHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,6 +31,19 @@ func buttonHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Printf("Got the following message: %s\n", decoded.Message)
+}
+
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	var decoded IdPost
+
+	err := json.NewDecoder(r.Body).Decode(&decoded)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("Uploaded data: %d\n", decoded.Id)
 }
 
 func main() {
@@ -50,30 +68,47 @@ func main() {
 	fmt.Println("SQL last insert ID: ", lastInsertId)
 	fmt.Println("SQL rows affected: ", rowsAffecred)
 
-	// Start server
+	// Server startup
 
 	http.HandleFunc("/api/hello", buttonHandler)
+	http.HandleFunc("/api/upload", uploadHandler)
 
 	fs := http.FileServer(http.Dir("./frontend/dist"))
 	http.Handle("/", fs)
 
-	fmt.Println("Server listening on port 3000")
-	log.Panic(
-		http.ListenAndServe(":3000", nil),
-	)
-
 	// Post last created ID
 
-	type IdPost struct {
-		id int64
-	}
+	/*
+		marshalled, err := json.Marshal(IdPost{Id: lastInsertId})
+		if err != nil {
+			panic(err)
+		}
 
-	marshalled, err := json.Marshal(IdPost{id: lastInsertId})
 
-	resp, err := http.Post("/api/upload", "application/json", bytes.NewReader(marshalled))
+			resp, err := http.Post("/api/upload", "application/json", bytes.NewReader(marshalled))
+			if err != nil {
+				panic(err)
+			}
+
+			fmt.Println("POST response:", resp)
+	*/
+
+	// Server listen
+
+	// fmt.Println("Server listening on port 3000")
+
+	ln, err := net.Listen("tcp", ":3000")
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 
-	fmt.Println("POST response:", resp)
+	go func() {
+		log.Panic(
+			http.Serve(ln, nil),
+		)
+	}()
+
+	runtime.Goexit()
+	fmt.Println("Exit")
+
 }
