@@ -4,11 +4,13 @@
       Hello to Vue
     </h1>
     <HelloButton />
+    <DataDisplay />
   </div>
 </template>
 
 <script setup lang="ts">
 import HelloButton from './HelloButton.vue'
+import DataDisplay from './DataDisplay.vue'
 </script>
 
 <style scoped>
