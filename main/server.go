@@ -1,13 +1,14 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"runtime"
+
+	reader "github.com/chnmk/vue-go-playground/main/sql"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -47,67 +48,31 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// Read SQL
+	reader.ReadSQLite()
 
-	// Read SQL database
-
-	db, err := sql.Open("sqlite3", "test")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	result, err := db.Exec("insert into test (mytext, myinteger) values ('Success', '42')",
-		"Apple", 72000)
-	if err != nil {
-		panic(err)
-	}
-
-	lastInsertId, _ := result.LastInsertId()
-	rowsAffecred, _ := result.RowsAffected()
-
-	fmt.Println("SQL last insert ID: ", lastInsertId)
-	fmt.Println("SQL rows affected: ", rowsAffecred)
-
-	// Server startup
-
+	// Run handlers
 	http.HandleFunc("/api/hello", buttonHandler)
 	http.HandleFunc("/api/upload", uploadHandler)
 
-	fs := http.FileServer(http.Dir("./web/dist"))
+	// Serve frontend app
+	fs := http.FileServer(http.Dir("./frontend/dist"))
 	http.Handle("/", fs)
 
-	// Post last created ID
-
-	/*
-		marshalled, err := json.Marshal(IdPost{Id: lastInsertId})
-		if err != nil {
-			panic(err)
-		}
-
-
-			resp, err := http.Post("/api/upload", "application/json", bytes.NewReader(marshalled))
-			if err != nil {
-				panic(err)
-			}
-
-			fmt.Println("POST response:", resp)
-	*/
-
-	// Server listen
-
-	// fmt.Println("Server listening on port 3000")
-
+	// Create listener
 	ln, err := net.Listen("tcp", ":3000")
 	if err != nil {
 		log.Panic(err)
 	}
 
+	// Serve in a goroutine
 	go func() {
 		log.Panic(
 			http.Serve(ln, nil),
 		)
 	}()
 
+	// Keep server goroutine alive until exit
 	runtime.Goexit()
 	fmt.Println("Exit")
 

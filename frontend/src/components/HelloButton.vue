@@ -15,6 +15,7 @@ function hello() {
   })
   .then(function (response) {
     console.log(response);
+    alert("Success! Check console for details.")
   })
   .catch((error) => {
     window.alert(`The API returned an error: ${error}`);
