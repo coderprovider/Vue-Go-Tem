@@ -1,16 +1,18 @@
 <template>
   <div class="wrapper">
     <h1 class="message">
-      Hello to Vue
+      Hello, Vue!
     </h1>
     <HelloButton />
-    <DataDisplay />
+    <!--
+      <DataDisplay />
+    -->
   </div>
 </template>
 
 <script setup lang="ts">
 import HelloButton from './HelloButton.vue'
-import DataDisplay from './DataDisplay.vue'
+// import DataDisplay from './DataDisplay.vue'
 </script>
 
 <style scoped>
@@ -21,8 +23,9 @@ import DataDisplay from './DataDisplay.vue'
 }
 .message {
   text-align: center;
-  color: aquamarine;
+  color: darkgreen;
   margin-top: 0;
   padding-top: 1rem;
+  font-weight: bold;
 }
 </style>

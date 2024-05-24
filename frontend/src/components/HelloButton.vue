@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper">
+  <div class="button-wrapper">
     <button @click="hello" class="hello">
-      Say hello
+      Say Hello
     </button>
   </div>
 </template>
@@ -23,16 +23,21 @@ function hello() {
 </script>
 
 <style scoped>
-.wrapper {
+.button-wrapper {
   display: flex;
-  width: 100vw;
   justify-content: center;
 }
+
 .hello {
   background-color: aqua;
   border-radius: 20px;
-  border: 0px;
-  padding: 10px;
-  height: 3rem;
+  border: 1px solid gray;
+  padding: 0.8rem 1rem;
+  transition: .3s;
+}
+
+.hello:hover {
+  cursor: pointer;
+  background-color: aquamarine;
 }
 </style>
