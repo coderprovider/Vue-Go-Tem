@@ -73,7 +73,7 @@ func main() {
 	http.HandleFunc("/api/hello", buttonHandler)
 	http.HandleFunc("/api/upload", uploadHandler)
 
-	fs := http.FileServer(http.Dir("./frontend/dist"))
+	fs := http.FileServer(http.Dir("./web/dist"))
 	http.Handle("/", fs)
 
 	// Post last created ID
