@@ -1,59 +1,24 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"runtime"
 
-	reader "github.com/chnmk/vue-go-playground/main/sql"
+	"github.com/chnmk/vue-go-playground/main/transport"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type vueMessage struct {
-	Message string `json:"message"`
-}
-
-type IdPost struct {
-	Id int64 `json:"id"`
-}
-
-func buttonHandler(w http.ResponseWriter, r *http.Request) {
-	var decoded vueMessage
-
-	err := json.NewDecoder(r.Body).Decode(&decoded)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	fmt.Printf("Got the following message: %s\n", decoded.Message)
-}
-
-func uploadHandler(w http.ResponseWriter, r *http.Request) {
-	var decoded IdPost
-
-	err := json.NewDecoder(r.Body).Decode(&decoded)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	fmt.Printf("Uploaded data: %d\n", decoded.Id)
-}
-
 func main() {
 	// Read SQL
-	reader.ReadSQLite()
+	// reader.ReadSQLite()
 
 	// Run handlers
-	http.HandleFunc("/api/hello", buttonHandler)
-	http.HandleFunc("/api/upload", uploadHandler)
+	http.HandleFunc("/api/hello", transport.ButtonHandler)
+	http.HandleFunc("/api/upload", transport.UploadHandler)
 
 	// Serve frontend app
 	fs := http.FileServer(http.Dir("./frontend/dist"))
@@ -75,5 +40,4 @@ func main() {
 	// Keep server goroutine alive until exit
 	runtime.Goexit()
 	fmt.Println("Exit")
-
 }
