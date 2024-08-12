@@ -6,7 +6,7 @@ import (
 )
 
 func ReadSQLite() {
-	db, err := sql.Open("sqlite3", "test")
+	db, err := sql.Open("sqlite3", "main/db/sqlite/test")
 	if err != nil {
 		panic(err)
 	}

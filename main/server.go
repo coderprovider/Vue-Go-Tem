@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/chnmk/vue-go-playground/main/transport"
+	transport "github.com/chnmk/vue-go-playground/main/transport/rest"
 
 	_ "github.com/mattn/go-sqlite3"
 )
