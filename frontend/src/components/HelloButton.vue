@@ -13,6 +13,7 @@ function hello() {
   axios.post("/api/hello", {
     message: 'Hello from Vue'
   })
+  // console.log("entered");
   .then(function (response) {
     console.log(response);
     alert("Success! Check console for details.")
